@@ -1,0 +1,56 @@
+version: '3'
+
+volumes:
+  database:
+
+###> doctrine/doctrine-bundle ###
+  db-data:
+###< doctrine/doctrine-bundle ###
+
+services:
+  database:
+    container_name: app_database
+    hostname: database
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MARIADB_DATABASE: app
+      MYSQL_USER: ${MYSQL_USER:-symfony}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-symfony}
+    volumes:
+      - database:/var/lib/mysql
+  php:
+    container_name: app_php
+    hostname: app_php
+    image: micahw156/php:8.1-fpm
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: mysql://symfony:symfony@database:3306/app?mariadb-10.11
+    depends_on:
+      - database
+  nginx:
+    container_name: app_nginx
+    hostname: app_nginx
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - ${NGINX_PORT:-8080}:80
+    volumes:
+      - .:/var/www/html
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+      - database
+  phpmyadmin:
+    container_name: app_phpmyadmin
+    hostname: phpmyadmin
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=database
