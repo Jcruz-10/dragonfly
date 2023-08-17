@@ -1,0 +1,70 @@
+default:
+  image: micahw156/php:8.1-fpm
+
+stages:
+  - test
+  - deploy
+
+variables:
+  APP_ENV: dev
+  MYSQL_DATABASE: app
+  MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+  MYSQL_USER: $MYSQL_USER
+  MYSQL_PASSWORD: $MYSQL_PASSWORD
+
+sast:
+  stage: test
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+code-quality:
+  stage: test
+
+  script:
+    - composer install --no-progress --ansi
+    - composer audit
+    - vendor/bin/rector --dry-run --no-ansi
+    - vendor/bin/phpcs src templates
+    # Micah will enable these after front end team adds stylesheets.
+    # - stylelint public/css
+    # - prettier --check public/css
+
+migration-test:
+  stage: test
+
+  variables:
+    APP_ENV: dev
+    DATABASE_URL: $DATABASE_URL_TEST
+
+  services:
+    - mariadb
+
+  script:
+    - composer install --no-progress --ansi
+    - bin/console doctrine:migrations:migrate
+    - bin/console doctrine:migrations:list
+
+## Important! ##
+# The target application must already be deployed in the /deploy directory.
+# This includes setting up .env.local.php with database connection.
+deploy:
+  stage: deploy
+
+  variables:
+    APP_ENV: prod
+    DATABASE_URL: $DATABASE_URL_PROD
+
+  only:
+    - main
+
+  script:
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - cd /deploy/23fa/html
+    - git pull
+    - composer install --no-dev
+    - bin/console doctrine:migrations:migrate -n
+    - bin/console doctrine:migrations:list
