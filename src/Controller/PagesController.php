@@ -16,14 +16,11 @@ class PagesController extends AbstractController
         ]);
     }
 
-     #[Route('/about', name: 'about')]
+      #[Route('/about', name: 'about')]
     public function about(): Response
     {
         return $this->render('about.html.twig', [
             'title' => "About Us",
         ]);
     }
-
-
-
 }
