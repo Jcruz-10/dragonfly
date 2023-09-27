@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -20,6 +22,23 @@ class SecurityController extends AbstractController
         return $this->render('login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
+        ]);
+    }
+
+    #[Route('/api/login', name: 'api_login')]
+    public function apiLogin(#[CurrentUser] ?User $user): Response
+    {
+        if (null === $user) {
+            return $this->json([
+                 'error' => 'missing credentials',
+             ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->json([
+            'data' => [
+                'user' => $user->getUserIdentifier(),
+                'roles' => $user->getRoles(),
+            ],
         ]);
     }
 }
