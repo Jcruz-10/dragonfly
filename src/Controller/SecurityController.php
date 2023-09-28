@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,10 +36,19 @@ class SecurityController extends AbstractController
              ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $key = $_ENV["JWT_SECRET"];
+        $payload = [
+           'sub' => $user->getId(),
+           'name' => $user->getUserIdentifier(),
+           'iat' => time(),
+           'exp' => time() + 14400,
+        ];
+
         return $this->json([
             'data' => [
                 'user' => $user->getUserIdentifier(),
                 'roles' => $user->getRoles(),
+                'token' => JWT::encode($payload, $key, 'HS256'),
             ],
         ]);
     }
