@@ -1,4 +1,6 @@
 {
+    "name": "cis-294-23fa/dragonfly",
+    "description": "Website for Dragonfly Salon and Spa",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
