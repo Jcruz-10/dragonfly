@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link href="{{ asset('css/normalize.css') }}" rel="stylesheet" media="all">
-        <link href="{{ asset('css/dragonfly.css') }}" rel="stylesheet" media="all">
-    </head>
-    <body>
-        <a class="nav-link" href="{{ path('about') }}">About</a>
+<html lang="en">
+
+<head>
+  <title>Dragonfly Salon and Spa</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <link rel="stylesheet" href="{{ asset('css/dragonfly.css') }}">
+
+
+</head>
+
+<body>
+
+
+      <div class="hero">
+        <video autoplay loop muted plays-inline class="back-video">
+
+        </video>
+        <nav>
+          <img src="css/images/logo.jpg" alt="logo">
+          <ul>
+            <li><a href="{{ path('frontpage')}}">Home</a></li>
+            <li><a href="{{ path('about')}}">About</a></li>
+            <li><a href="#">Contact us</a></li>
+          </ul>
+        </nav>
+        <div class="contect">
         {% block body %}{% endblock %}
+        </div>
+      </div>
     </body>
 </html>

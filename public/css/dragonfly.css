@@ -3,3 +3,211 @@
 this css files is ours
 
 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.hero {
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(12, 3, 51, 0.3), rgba(12, 3, 51, 0.3));
+    position: relative;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px 8%;
+    /* Adjusted padding to make it thinner */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(4, 4, 4, 0.6);
+    z-index: 999;
+}
+
+nav img {
+    width: 40px;
+    /* Adjusted width to match the thinner navigation bar */
+    height: 40px;
+    /* Adjusted height to match the thinner navigation bar */
+}
+
+nav ul li {
+    list-style: none;
+    display: inline-block;
+    margin-left: 20px;
+    /* Adjusted margin to match the thinner navigation bar */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    /* Adjusted font size to match the thinner navigation bar */
+}
+
+.contect {
+    text-align: center;
+    margin-top: 40px;
+    /* Adjusted margin to create less space above the content */
+}
+
+.contect h1 {
+    font-size: 80px;
+    /* Adjusted font size to make the heading smaller */
+    color: #fff;
+    font-weight: 600;
+}
+
+.contect a {
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    border: 2px solid #fff;
+    padding: 10px 40px;
+    border-radius: 30px;
+    margin-top: 20px;
+    cursor: pointer;
+    /* Added cursor style to indicate the link is clickable */
+}
+
+
+
+.back-video {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+@media (min-aspect-ratio: 16/9) {
+    .back-video {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-aspect-ratio: 16/9) {
+    .back-video {
+        width: auto;
+        height: 100%;
+    }
+}
+
+
+
+
+
+
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.line {
+    background-color: #02bb48;
+    width: 120px;
+    height: 1px;
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+p {
+    color: #8b8e93;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300px;
+}
+
+h2 {
+    color: #1d2025;
+    font-size: 34px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* <---- button ----> */
+
+a.button {
+    font-size: 16px;
+    line-height: 16px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 21px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+a.button:hover {
+    text-decoration: none;
+    box-shadow: 0 7px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+a.button.green {
+    background-color: #0cc652;
+    color: white;
+    transition: all 0.3s;
+}
+
+a.button.green:hover {
+    background-color: #02bb48;
+    transition: all 0.3s;
+}
+
+a.button.white {
+    background-color: white;
+    color: #0cc652;
+    transition: all 0.3s;
+}
+
+a.button.white:hover {
+    background-color: #f7f7f7;
+    transition: all 0.3s;
+}
+
+/* <---- HEADER ----> */
+
+.header {
+    position: absolute;
+}
+
+.header .navbar-brand:hover {
+    color: #0cc652;
+}
+
+.header .navbar-brand {
+    color: white;
+    font-weight: bold;
+}
+
+.header ul li a {
+    color: white;
+    padding-left: 0 14px !important;
+    padding-right: 0 14px !important;
+    text-transform: uppercase;
+}
+
+.header ul li:hover a {
+    color: #0cc652;
+}
+
+.navbar-nav>.active>a,
+.navbar-nav>.active>a:hover,
+.navbar-nav>.active>a:focus {
+    color: #0cc652;
+}
