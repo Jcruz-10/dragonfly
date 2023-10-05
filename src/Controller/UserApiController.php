@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\AuthorizationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -14,24 +15,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserApiController extends AbstractController
 {
     public function __construct(
-        private readonly ManagerRegistry $doctrine
+        private readonly ManagerRegistry $doctrine,
+        private readonly AuthorizationService $authService
     ) {
     }
 
     #[Route('/api/users', name: 'api_get_users')]
     public function getUsers(Request $request): JsonResponse
     {
-        $key = $_ENV["JWT_SECRET"];
-        $header = $request->headers->get('Authorization');
-        $header = preg_replace('/^Bearer /', '', $header);
-        try {
-            $token = JWT::decode($header, new Key($key, 'HS256'));
-            $user = $this->doctrine->getRepository(User::class)->find($token->sub);
-        } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ]);
+        //checking the login for current user
+        $auth = $this->authService->checkToken($request);
+        if (isset($auth['error'])) {
+            return $this->json($auth);
         }
+        if (!in_array('ROLE_ADMIN', $auth['user']->getRoles())) {
+            return $this->json(['error' => 'User has insufficient permissions.']);
+        }
+
         return $this->json([
             'data' => $this->doctrine->getRepository(User::class)->findAll(),
         ]);
