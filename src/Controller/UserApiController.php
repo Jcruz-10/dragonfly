@@ -32,8 +32,13 @@ class UserApiController extends AbstractController
             return $this->json(['error' => 'User has insufficient permissions.']);
         }
 
-        return $this->json([
-            'data' => $this->doctrine->getRepository(User::class)->findAll(),
-        ]);
+        return $this->json(
+            data: [
+                'data' => $this->doctrine->getRepository(User::class)->findAll(),
+            ],
+            context: [
+                'groups' => 'get_users',
+            ]
+        );
     }
 }
