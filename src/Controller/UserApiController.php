@@ -28,7 +28,7 @@ class UserApiController extends AbstractController
         if (isset($auth['error'])) {
             return $this->json($auth);
         }
-        if (!in_array('ROLE_ADMIN', $auth['user']->getRoles())) {
+        if (!$auth['user']->isEmployee()) {
             return $this->json(['error' => 'User has insufficient permissions.']);
         }
 
