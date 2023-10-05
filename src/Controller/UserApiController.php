@@ -10,13 +10,15 @@ use Firebase\JWT\Key;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserApiController extends AbstractController
 {
     public function __construct(
         private readonly ManagerRegistry $doctrine,
-        private readonly AuthorizationService $authService
+        private readonly AuthorizationService $authService,
+        private readonly UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
@@ -35,6 +37,47 @@ class UserApiController extends AbstractController
         return $this->json(
             data: [
                 'data' => $this->doctrine->getRepository(User::class)->findAll(),
+            ],
+            context: [
+                'groups' => 'get_users',
+            ]
+        );
+    }
+
+    #[Route('/api/user/add', name: 'api_add_user')]
+    public function addUser(Request $request): JsonResponse
+    {
+                //checking the login for current user
+        $auth = $this->authService->checkToken($request);
+        if (isset($auth['error'])) {
+            return $this->json($auth);
+        }
+        if (!$auth['user']->isAdmin()) {
+            return $this->json(['error' => 'User has insufficient permissions.']);
+        }
+        $payload = $request->getPayload()->all();
+
+        if (empty($payload)) {
+            return $this->json(['error' => 'Missing payload.']);
+        }
+
+        if (empty($payload['username']) || empty($payload['password'])) {
+            return $this->json(['error' => 'Missing required data.']);
+        }
+        // @todo check for existing user
+        $user = new User();
+        $user->setUsername($payload['username']);
+        $user->setPassword($this->passwordHasher->hashPassword($user, $payload['password']));
+        $roles = $payload['roles'] ?? [];
+        $user->setRoles($roles + ['ROLE_USER']);
+
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            data: [
+                'data' => $user,
             ],
             context: [
                 'groups' => 'get_users',
