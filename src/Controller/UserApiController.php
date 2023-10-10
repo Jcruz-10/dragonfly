@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\AuthorizationService;
 use Doctrine\Persistence\ManagerRegistry;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
