@@ -68,8 +68,7 @@ class UserApiController extends AbstractController
         $user = new User();
         $user->setUsername($payload['username']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $payload['password']));
-        $roles = $payload['roles'] ?? [];
-        $user->setRoles($roles + ['ROLE_USER']);
+        $user->setRoles($payload['roles'] ?? []);
 
         $entityManager = $this->doctrine->getManager();
         $entityManager->persist($user);
