@@ -45,7 +45,7 @@ class UserApiController extends AbstractController
     #[Route('/api/user/add', name: 'api_add_user')]
     public function addUser(Request $request): JsonResponse
     {
-                //checking the login for current user
+        //checking the login for current user
         $auth = $this->authService->checkToken($request);
         if (isset($auth['error'])) {
             return $this->json($auth);
