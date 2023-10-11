@@ -98,11 +98,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    #[Groups(['get_users'])]
     public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->roles);
     }
 
+    #[Groups(['get_users'])]
     public function isEmployee(): bool
     {
         return in_array('ROLE_EMPLOYEE', $this->roles) || $this->isAdmin();
