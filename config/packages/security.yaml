@@ -23,6 +23,9 @@ security:
                 login_path: app_login
                 check_path: app_login
 
+            logout:
+                path: app_logout
+
             json_login:
                 check_path: api_login
 
