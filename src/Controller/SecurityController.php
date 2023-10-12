@@ -31,6 +31,14 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    public function logout(): never
+    {
+        // controller can be blank: it will never be called!
+        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+    }
+
+
     #[Route('/api/login', name: 'api_login')]
     public function apiLogin(#[CurrentUser] ?User $user): Response
     {
@@ -39,6 +47,8 @@ class SecurityController extends AbstractController
                  'error' => 'missing credentials',
              ], Response::HTTP_UNAUTHORIZED);
         }
+
+
 
         return $this->json([
             'data' => [
