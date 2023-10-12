@@ -81,4 +81,50 @@ class UserApiController extends AbstractController
             ]
         );
     }
+
+    #[Route('/api/user/{id}/update', name: 'api_update_user', methods: ['POST'])]
+    public function updateUser(Request $request, string $id): JsonResponse
+    {
+                //checking the login for current user
+        $auth = $this->authService->checkToken($request);
+        if (isset($auth['error'])) {
+            return $this->json($auth);
+        }
+        if (!$auth['user']->isAdmin()) {
+            return $this->json(['error' => 'User has insufficient permissions.']);
+        }
+        $payload = $request->getPayload()->all();
+
+        if (empty($payload)) {
+            return $this->json(['error' => 'Missing payload.']);
+        }
+
+        // @todo check for existing user
+        $user = $this->doctrine->getRepository(User::class)->find($id);
+        if (empty($user)) {
+            return $this->json(['error' => "User $id not found."]);
+        }
+        if (!empty($payload['username'])) {
+            $user->setUsername($payload['username']);
+        }
+        if (!empty($payload['password'])) {
+            $user->setPassword($this->passwordHasher->hashPassword($user, $payload['password']));
+        }
+        if (!empty($payload['roles'])) {
+            $user->setRoles($payload['roles'] ?? []);
+        }
+
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            data: [
+                'data' => $user,
+            ],
+            context: [
+                'groups' => 'get_users',
+            ]
+        );
+    }
 }
