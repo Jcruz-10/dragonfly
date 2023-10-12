@@ -27,6 +27,7 @@ services:
     restart: unless-stopped
     volumes:
       - .:/var/www/html
+      - ${HOME}/docker/.ssh:/home/webmxr/.ssh
     environment:
       APP_ENV: dev
       DATABASE_URL: mysql://symfony:symfony@database:3306/app?mariadb-10.11
