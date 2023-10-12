@@ -28,4 +28,16 @@ class AuthorizationService
             return ['error' => $e->getMessage()];
         }
     }
+
+    public function getToken(User $user): string
+    {
+        $key = $_ENV["JWT_SECRET"];
+        $payload = [
+           'sub' => $user->getId(),
+           'name' => $user->getUserIdentifier(),
+           'iat' => time(),
+           'exp' => time() + 14400,
+        ];
+        return JWT::encode($payload, $key, 'HS256');
+    }
 }
